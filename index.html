@@ -446,7 +446,7 @@
   <div class="log" id="loading" hidden aria-live="polite">
     <div class="log-head"><span class="live"></span><span id="log-target">checking</span><span class="t" id="log-time">0.0s</span></div>
     <div class="log-body" id="log-body"></div>
-    <div class="log-note">Lighthouse loads the page in a real Chrome on Google's servers. This takes 10–30 seconds.</div>
+    <div class="log-note">Lighthouse loads the page in a real Chrome on Google's servers. It usually takes 20–60 seconds.</div>
     <div class="log-bar"><i id="log-bar"></i></div>
   </div>
 
@@ -504,7 +504,7 @@
   const API = "https://www.googleapis.com/pagespeedonline/v5/runPagespeed";
   const KEY_STORE = "psi-key";
   // The site's own key, restricted in Google Cloud to this site's referrer, so it's safe in the page. A visitor's saved key wins.
-  const SITE_KEY = "";
+  const SITE_KEY = "AIzaSyDRFvLvLisIj8O73rBuOFsAblE0cbimvcQ";
 
   const $ = (id) => document.getElementById(id);
   const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -651,7 +651,7 @@
     if (key) q.set("key", key);
 
     try {
-      const res = await fetch(`${API}?${q}`, { signal: AbortSignal.timeout(90000) });
+      const res = await fetch(`${API}?${q}`, { signal: AbortSignal.timeout(150000) });
       const data = await res.json().catch(() => ({}));
       if (!res.ok || !data.lighthouseResult) throw Object.assign(new Error(explain(res.status, data.error?.message)), { shown: true });
       $("log-bar").style.width = "100%";
@@ -659,7 +659,7 @@
       render(data);
     } catch (e) {
       $("intro").hidden = false;
-      showError(e.shown ? e.message : e?.name === "TimeoutError" ? "Lighthouse took longer than 90 seconds. Heavy pages sometimes do; try again." : "Couldn't reach Google's PageSpeed service. Check your connection and try again.");
+      showError(e.shown ? e.message : e?.name === "TimeoutError" ? "Lighthouse took longer than two and a half minutes. Heavy pages sometimes do; try again." : "Couldn't reach Google's PageSpeed service. Check your connection and try again.");
     } finally {
       stopLog();
       busy(false);
