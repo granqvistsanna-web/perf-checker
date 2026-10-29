@@ -431,7 +431,7 @@
   <details class="keybox" id="keybox">
     <summary><svg class="i" aria-hidden="true" style="width:16px;height:16px"><use href="#i-key"/></svg>Use your own Google API key<span class="on" id="key-on" hidden>Key saved</span><svg class="i caret" aria-hidden="true"><use href="#i-caret"/></svg></summary>
     <div class="keybody">
-      <p>Checks without a key share Google's free quota with everyone else, and it often runs out. A free key gives you 25,000 checks a day. <a href="https://developers.google.com/speed/docs/insights/v5/get-started#APIKey" target="_blank" rel="noopener">Get a PageSpeed Insights key</a>, paste it here, and it stays in this browser only.</p>
+      <p>Free checks share one daily quota with everyone using this tool, and it can run out. A free key gives you 25,000 checks a day. <a href="https://developers.google.com/speed/docs/insights/v5/get-started#APIKey" target="_blank" rel="noopener">Get a PageSpeed Insights key</a>, paste it here, and it stays in this browser only.</p>
       <div class="keyrow">
         <label class="field" for="key"><input id="key" type="password" autocomplete="off" spellcheck="false" placeholder="AIza…"></label>
         <button class="btn quiet" id="key-save" type="button">Save key</button>
@@ -499,6 +499,8 @@
 (() => {
   const API = "https://www.googleapis.com/pagespeedonline/v5/runPagespeed";
   const KEY_STORE = "psi-key";
+  // The site's own key, restricted in Google Cloud to this site's referrer, so it's safe in the page. A visitor's saved key wins.
+  const SITE_KEY = "";
 
   const $ = (id) => document.getElementById(id);
   const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -614,7 +616,7 @@
       $("keybox").open = true;
       return getKey()
         ? "Your API key has hit its quota. Try again later or use a different key."
-        : "Google's shared free quota is used up right now. Add your own free API key below and run it again.";
+        : "Today's free checks are used up. Add your own free API key below and run it again.";
     }
     if (/API key not valid|API_KEY_INVALID/i.test(message)) { $("keybox").open = true; return "Google didn't accept that API key. Check it and save it again."; }
     if (/DNS|ERR_NAME_NOT_RESOLVED/i.test(message)) return "That domain doesn't resolve. Check the spelling.";
@@ -641,7 +643,8 @@
 
     const q = new URLSearchParams({ url: value, strategy });
     CATS.forEach(([id]) => q.append("category", id));
-    if (getKey()) q.set("key", getKey());
+    const key = getKey() || SITE_KEY;
+    if (key) q.set("key", key);
 
     try {
       const res = await fetch(`${API}?${q}`, { signal: AbortSignal.timeout(90000) });

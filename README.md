@@ -19,7 +19,7 @@ Live: https://granqvistsanna-web.github.io/perf-checker/ (not deployed yet) · P
 
 - `index.html` is the whole app. Static, on GitHub Pages, styled with [Pumice](https://granqvistsanna-web.github.io/pumice/). No backend.
 - It calls Google's [PageSpeed Insights API v5](https://developers.google.com/speed/docs/insights/v5/get-started) straight from the browser, which runs real Lighthouse on Google's servers (10–30 s per check).
-- **API key:** calls without a key share one anonymous Google quota with everyone on the internet, and in practice it's often used up (HTTP 429). When that happens the page asks for the visitor's own free key, which is kept in `localStorage` only and sent to Google with each check. Another option is to create one key restricted to the `granqvistsanna-web.github.io` referrer and set it as a default in `index.html`.
+- **API key:** calls without a key share one anonymous Google quota with everyone on the internet, and in practice it is used up (HTTP 429). So the page sends `SITE_KEY` from `index.html`: a key restricted in Google Cloud to the `granqvistsanna-web.github.io/*` referrer and to the PageSpeed Insights API, which makes it safe to have in public code. If that quota (25,000 checks a day) runs out, visitors can paste their own key; it is kept in `localStorage` only and wins over the site key.
 
 ## Develop
 
