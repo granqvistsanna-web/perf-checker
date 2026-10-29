@@ -196,7 +196,7 @@
   section { margin-top: 64px; scroll-margin-top: 80px; }
   .sec-label {
     display: flex; align-items: center; flex-wrap: wrap; gap: var(--s-4) var(--s-6);
-    font-size: 26px; line-height: 1.2; font-weight: 500; letter-spacing: -.01em; color: var(--ink);
+    margin: 0; font-size: 26px; line-height: 1.2; font-weight: 500; letter-spacing: -.01em; color: var(--ink);
     margin-bottom: var(--s-8);
   }
   .sec-label .n { color: var(--ink-4); font-variant-numeric: tabular-nums; }
@@ -449,7 +449,7 @@
   <!-- ============ Pre-run ============ -->
   <div id="intro">
     <section>
-      <div class="sec-label"><span class="n">00</span> What gets measured <span class="count">4 Lighthouse categories</span></div>
+      <h2 class="sec-label"><span class="n">00</span> What gets measured <span class="count">4 Lighthouse categories</span></h2>
       <div class="spec">
         <article><svg class="ring-sm" viewBox="0 0 120 120" aria-hidden="true"><circle class="track" cx="60" cy="60" r="52"/><circle class="arc" cx="60" cy="60" r="52" pathLength="100" style="stroke-dashoffset:10"/></svg><h3>Performance</h3><p>How fast the page paints, becomes usable and stays still: LCP, TBT, CLS, FCP and Speed Index.</p></article>
         <article><svg class="ring-sm" viewBox="0 0 120 120" aria-hidden="true"><circle class="track" cx="60" cy="60" r="52"/><circle class="arc" cx="60" cy="60" r="52" pathLength="100" style="stroke-dashoffset:25"/></svg><h3>Accessibility</h3><p>Contrast, labels, alt text, headings and whether keyboards and screen readers can use it.</p></article>
@@ -465,17 +465,17 @@
     <div class="runmeta reveal" id="runmeta"></div>
 
     <section class="reveal">
-      <div class="sec-label"><span class="n">01</span> Core Web Vitals, lab <span class="count" id="lab-count"></span></div>
+      <h2 class="sec-label"><span class="n">01</span> Core Web Vitals, lab <span class="count" id="lab-count"></span></h2>
       <div class="metrics" id="lab"></div>
     </section>
 
     <section class="reveal">
-      <div class="sec-label"><span class="n">02</span> Real users <span class="count" id="field-count"></span></div>
+      <h2 class="sec-label"><span class="n">02</span> Real users <span class="count" id="field-count"></span></h2>
       <div class="metrics" id="field"></div>
     </section>
 
     <section class="reveal" id="fixes-sec">
-      <div class="sec-label"><span class="n">03</span> Fix these first <span class="count" id="fix-count"></span></div>
+      <h2 class="sec-label"><span class="n">03</span> Fix these first <span class="count" id="fix-count"></span></h2>
       <div class="fixes" id="fixes"></div>
     </section>
 

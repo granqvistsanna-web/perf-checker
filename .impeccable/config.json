@@ -1,0 +1,17 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "pulsing-dot",
+        "value": "*",
+        "files": [
+          "index.html"
+        ],
+        "createdAt": "2026-10-29T17:47:33.914Z",
+        "reason": "Claude: the dot pulses only while a Lighthouse check is actually running, tied to live state"
+      }
+    ]
+  }
+}
