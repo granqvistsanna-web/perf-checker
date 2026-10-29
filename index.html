@@ -279,8 +279,11 @@
   .scale { position: relative; display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; margin-top: var(--s-2); }
   .scale > i { height: 6px; border-radius: var(--r-pill); background: color-mix(in srgb, var(--tone) 28%, transparent); }
   .scale > b { position: absolute; top: 50%; width: 14px; height: 14px; margin: -7px 0 0 -7px; border-radius: 50%; background: var(--ink); box-shadow: 0 0 0 3px var(--bg); }
-  .scale-l { display: grid; grid-template-columns: repeat(3, 1fr); font-size: 11px; color: var(--ink-4); font-variant-numeric: tabular-nums; }
-  .scale-l span:nth-child(2) { text-align: center; } .scale-l span:nth-child(3) { text-align: right; }
+  /* thresholds sit on the band boundaries, where good ends and where poor starts */
+  .scale-l { position: relative; height: 14px; font-size: 11px; line-height: 14px; color: var(--ink-4); font-variant-numeric: tabular-nums; }
+  .scale-l span { position: absolute; translate: -50% 0; white-space: nowrap; }
+  .dist-l { font-size: 12px; color: var(--ink-4); font-variant-numeric: tabular-nums; }
+  .dist-l b { color: var(--ink-2); }
   /* field data: share of real visits in each band */
   .dist { display: flex; gap: 2px; height: 6px; margin-top: var(--s-2); }
   .dist i { border-radius: var(--r-pill); background: var(--tone); min-width: 2px; }
@@ -354,6 +357,7 @@
     .fix { grid-template-columns: auto minmax(0, 1fr); padding: 18px; gap: var(--s-6); }
     .fix .imp { grid-column: 2; margin-top: 0; justify-self: start; }
     .keyrow { flex-direction: column; }
+    .tb-end .btn.sm { width: var(--h-nav); padding: 0; } .tb-end .gh { display: none; }
     footer .byline { flex-basis: 100%; }
     footer a:first-of-type { margin-left: -12px; }
   }
@@ -395,7 +399,7 @@
         <svg class="i to-light" style="width:16px;height:16px"><use href="#i-moon"/></svg>
         <svg class="i to-dark" style="width:16px;height:16px"><use href="#i-sun"/></svg>
       </button>
-      <a class="btn sm" href="https://github.com/granqvistsanna-web/perf-checker"><svg class="i"><use href="#i-github"/></svg>GitHub</a></div>
+      <a class="btn sm" href="https://github.com/granqvistsanna-web/perf-checker" aria-label="GitHub"><svg class="i"><use href="#i-github"/></svg><span class="gh">GitHub</span></a></div>
   </div>
 </header>
 
@@ -676,10 +680,10 @@
     return `<div class="metric ${band}">
       <div class="top"><span class="t"><abbr title="${esc(name)}">${abbr}</abbr> · ${esc(name)}</span><span class="band"><i aria-hidden="true"></i>${BAND[band]}</span></div>
       <div class="v">${f.n}<small>${f.u}</small></div>
-      ${dist ? `<div class="dist" aria-label="${dist.map((d, i) => `${Math.round(d * 100)}% ${["good", "needs work", "poor"][i]}`).join(", ")}">${dist.map((d, i) => `<i class="${["pass", "warn", "fail"][i]}" style="flex:${d}"></i>`).join("")}</div>
-        <div class="scale-l">${dist.map((d) => `<span>${Math.round(d * 100)}%</span>`).join("")}</div>`
+      ${dist ? `<div class="dist" role="img" aria-label="${dist.map((d, i) => `${Math.round(d * 100)}% ${["good", "needs work", "poor"][i]}`).join(", ")}">${dist.map((d, i) => `<i class="${["pass", "warn", "fail"][i]}" style="flex:${d}"></i>`).join("")}</div>
+        <div class="dist-l" aria-hidden="true"><b>${Math.round(dist[0] * 100)}%</b> of visits good · ${Math.round(dist[2] * 100)}% poor</div>`
       : `<div class="scale" aria-hidden="true"><i class="pass"></i><i class="warn"></i><i class="fail"></i><b style="left:${pos(value, good, poor).toFixed(1)}%"></b></div>
-        <div class="scale-l" aria-hidden="true"><span>0</span><span>${thr(good, unitless)}</span><span>${thr(poor, unitless)}</span></div>`}
+        <div class="scale-l" aria-hidden="true"><span style="left:33.3%">${thr(good, unitless)}</span><span style="left:66.6%">${thr(poor, unitless)}</span></div>`}
       ${desc ? `<div class="d">${esc(desc)}</div>` : ""}
     </div>`;
   }
@@ -748,14 +752,13 @@
     }
 
     const ops = opportunities(lhr);
-    $("fixes-sec").hidden = !ops.length;
-    $("fix-count").textContent = `top ${ops.length}, by time saved`;
+    $("fix-count").textContent = ops.length ? `top ${ops.length}, by time saved` : "none";
     $("fixes").innerHTML = ops.map((o, i) => `
       <div class="fix">
         <span class="k">${i + 1}</span>
         <div><div class="ft">${esc(o.title.replace(/`/g, ""))}</div><div class="fd">${esc(o.fix)}</div></div>
         <span class="imp">${esc(saving(o))}</span>
-      </div>`).join("");
+      </div>`).join("") || `<div class="empty">Nothing big to fix: no finding would save noticeable time or data. Try the other device too.</div>`;
 
     const other = strategy === "mobile" ? "desktop" : "mobile";
     $("other").textContent = `Check on ${other} too`;
